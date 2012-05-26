@@ -83,6 +83,14 @@ public class EvolutionManager {
     }
 
     /**
+     * Retrieve the Environment assigned to this EvolutionManager
+     * @return the Environment
+     */
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    /**
      * Sets the rate at which mutations occur, as the number of point mutations per thousand Organisms.
      * @param mutationChancePerThousand the number of point mutations per thousand Organisms
      */

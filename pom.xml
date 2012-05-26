@@ -5,7 +5,10 @@
   <groupId>yagalib</groupId>
   <artifactId>yagalib</artifactId>
   <version>1.0</version>
-  <packaging>jar</packaging>
+    <modules>
+        <module>yagalib_example</module>
+    </modules>
+    <packaging>pom</packaging>
 
   <name>yagalib</name>
   <url>http://maven.apache.org</url>
