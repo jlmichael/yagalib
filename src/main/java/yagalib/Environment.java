@@ -11,7 +11,8 @@ import java.util.List;
  * using rules/information encoded in the player's Gene objects.
  *
  * @param <T> The type of Organisms populating this Environment
- * @see Organism, Gene
+ * @see Organism
+ * @see Gene
  * @author Jason Michael
  * @version 1.0
  */

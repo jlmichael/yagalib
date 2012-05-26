@@ -19,7 +19,8 @@ import java.util.*;
  * will then instruct its StatWriter to log the generation's fitness data, and then it will reset all surviving
  * Organisms' fitness to some initial value (determined by the Organism class).  It repeats this entire process
  * the given number of times.
- * @see Environment, Organism
+ * @see Environment
+ * @see Organism
  */
 public class EvolutionManager {
 

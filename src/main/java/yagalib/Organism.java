@@ -9,7 +9,9 @@ import java.util.List;
  * each Organism's fitness.  The genetic functions of pointMutate(), reproduceWith(), complexifyGenome() and
  * simplifyGenome() allow fit Organisms to proliferate and modify their Genomes.
  * @param <T> The type of {@link Genome} each Organism stores its Genes in
- * @see Gene, Environment, Genome
+ * @see Gene
+ * @see Environment
+ * @see Genome
  * @author Jason Michael
  * @version 1.0
  */

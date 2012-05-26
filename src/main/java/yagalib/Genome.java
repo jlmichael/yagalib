@@ -15,7 +15,8 @@ import java.util.List;
  * An example of a Genome might be a blackjack player's strategy, itself composed of a list of rules the player uses
  * to decide how to play a given hand versus the dealer's up card.
  * @param <T> the type of Genes the Genome is composed of.
- * @see Organism, Gene
+ * @see Organism
+ * @see Gene
  * @author Jason Michael
  * @version 1.0
  */
