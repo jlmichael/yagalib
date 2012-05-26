@@ -78,6 +78,10 @@ public class Rule implements Gene {
         return this.dealerValue + "-" + this.handValue + "-" + this.handIsSoft + "-" + this.handIsSplittable;
     }
 
+    public String toString() {
+        return makeKey() + "-" + this.command;
+    }
+
     public Boolean isValid() {
         // Check for split on non-splittable hand
         if(handIsSplittable && handValue % 2 == 1) {

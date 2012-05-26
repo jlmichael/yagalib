@@ -115,4 +115,17 @@ public class Strategy implements Genome<Rule> {
             rules.remove(mutantKey);
         }
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder("\n");
+        int i = 0;
+        for(Map.Entry<String, Rule> entry : rules.entrySet()) {
+            sb.append("Rule ");
+            sb.append(i++);
+            sb.append(": ");
+            sb.append(entry.getValue());
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 }

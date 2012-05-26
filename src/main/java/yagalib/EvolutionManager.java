@@ -164,13 +164,17 @@ public class EvolutionManager {
     public <T extends Organism> void doOneGeneration() {
         Random r = new Random(new Date().getTime());
 
-        // Reset the environment
+        // Reset the environment and fitness of the Organisms
         environment.reset();
+        List<T> organisms = environment.getOrganisms();
+        for(Organism organism : organisms) {
+            organism.resetFitness();
+        }
+
         // execute the environment logic
         environment.doWorkOnOrganisms();
 
-        // Get the list of organisms and sort by fitness
-        List<T> organisms = environment.getOrganisms();
+        // After each run, sort the organisms by fitness
         Collections.sort(organisms, new Organism.OrganismComparator());
 
         // Emit some stats about the generation
@@ -229,10 +233,6 @@ public class EvolutionManager {
         // Step 6: Add in the next generation
         organisms.addAll(allOffspring);
 
-        // Step 7: Reset fitness if configured
-        for(Organism organism : organisms) {
-            organism.resetFitness();
-        }
     }
 
     /**

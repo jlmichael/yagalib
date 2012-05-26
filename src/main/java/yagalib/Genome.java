@@ -47,7 +47,7 @@ public interface Genome<T extends Gene> {
     public void complexify();
 
     /**
-     * Simpleify this Genome in some way, usually by the deletion of a random Gene.
+     * Simplify this Genome in some way, usually by the deletion of a random Gene.
      */
     public void simplify();
 
