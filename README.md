@@ -77,6 +77,11 @@ The included blackjack example contains a test case, GABlackJackTest, that illus
 >        em.setWriter(writer);
 >        em.evolve(100);
 
+Javadocs
+========
+
+Javadocs are available at [http://jlmichael.github.com/yagalib/apidocs/](http://jlmichael.github.com/yagalib/apidocs/)
+
 TL;DR
 =====
 
