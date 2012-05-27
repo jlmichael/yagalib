@@ -1,12 +1,9 @@
 package blackjack_example;
 
-
+import yagalib.EvolutionManager;
 import yagalib.Gene;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class Rule implements Gene {
 
@@ -130,20 +127,19 @@ public class Rule implements Gene {
 
     // A library function to generate a random, valid rule
     public static Rule generateRandomRule() {
-        Random r = new Random(new Date().getTime());
         Rule rule;
         do {
-            int dealerValue = r.nextInt(10) + 1;
-            boolean isSplittable = r.nextInt(2) == 0;
-            int handValue = r.nextInt(17) + 4;
+            int dealerValue = EvolutionManager.random.nextInt(10) + 1;
+            boolean isSplittable = EvolutionManager.random.nextInt(2) == 0;
+            int handValue = EvolutionManager.random.nextInt(17) + 4;
             if(handValue % 2 == 1) {
                 isSplittable = false;
             } else {
-                isSplittable = r.nextInt(2) == 0;
+                isSplittable = EvolutionManager.random.nextInt(2) == 0;
             }
-            boolean isSoft = r.nextInt(2) == 0;
+            boolean isSoft = EvolutionManager.random.nextInt(2) == 0;
             String command = "";
-            switch(r.nextInt(6)) {
+            switch(EvolutionManager.random.nextInt(6)) {
                 case 0:
                     command = Rule.HIT;
                     break;
@@ -374,28 +370,27 @@ public class Rule implements Gene {
     public void mutate() {
         do {
             // Determine which "base pair" to mutate
-            Random r = new Random(new Date().getTime());
-            int mutationPoint = r.nextInt(5);
+            int mutationPoint = EvolutionManager.random.nextInt(5);
             switch(mutationPoint) {
                 case 0:
                     // Dealer's up card
-                    setDealerValue(r.nextInt(9) + 1);
+                    setDealerValue(EvolutionManager.random.nextInt(9) + 1);
                     break;
                 case 1:
                     // Hand value
-                    setHandValue(r.nextInt(17) + 4);
+                    setHandValue(EvolutionManager.random.nextInt(17) + 4);
                     break;
                 case 2:
                     // softness
-                    setHandIsSoft(r.nextInt(2) == 1);
+                    setHandIsSoft(EvolutionManager.random.nextInt(2) == 1);
                     break;
                 case 3:
                     // splittable
-                    setHandIsSplittable(r.nextInt(2) == 1);
+                    setHandIsSplittable(EvolutionManager.random.nextInt(2) == 1);
                     break;
                 case 4:
                     // command
-                    int commandIndex = r.nextInt(6);
+                    int commandIndex = EvolutionManager.random.nextInt(6);
                     String command = "";
                     switch(commandIndex) {
                         case 0:

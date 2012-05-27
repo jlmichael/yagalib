@@ -1,7 +1,5 @@
 package blackjack_example;
 
-import blackjack_example.Hand;
-
 import java.util.List;
 
 public class CasinoRules {

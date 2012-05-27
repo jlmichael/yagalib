@@ -1,9 +1,6 @@
 package blackjack_example;
 
-import blackjack_example.Agent;
-import blackjack_example.Card;
-import blackjack_example.CasinoRules;
-import blackjack_example.Hand;
+import yagalib.EvolutionManager;
 import yagalib.Genome;
 
 import java.util.*;
@@ -54,10 +51,9 @@ public class Strategy implements Genome<Rule> {
         if(rules.isEmpty()) {
             return;
         }
-        Random r = new Random(new Date().getTime());
         List<Rule> ruleList = new ArrayList<Rule>();
         ruleList.addAll(rules.values());
-        Rule mutant = ruleList.get(r.nextInt(ruleList.size()));
+        Rule mutant = ruleList.get(EvolutionManager.random.nextInt(ruleList.size()));
         String mutantKey = mutant.makeKey();
         rules.remove(mutantKey);
         mutant.mutate();
@@ -106,11 +102,10 @@ public class Strategy implements Genome<Rule> {
     }
 
     public void simplify() {
-        Random r = new Random(new Date().getTime());
         if(!rules.isEmpty()) {
             List<Rule> ruleList = new ArrayList<Rule>();
             ruleList.addAll(rules.values());
-            Rule mutant = ruleList.get(r.nextInt(ruleList.size()));
+            Rule mutant = ruleList.get(EvolutionManager.random.nextInt(ruleList.size()));
             String mutantKey = mutant.makeKey();
             rules.remove(mutantKey);
         }

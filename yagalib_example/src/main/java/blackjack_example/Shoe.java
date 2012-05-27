@@ -1,7 +1,6 @@
 package blackjack_example;
 
-import blackjack_example.Card;
-import org.apache.log4j.Logger;
+import yagalib.EvolutionManager;
 
 import java.util.*;
 
@@ -11,8 +10,6 @@ public class Shoe {
     private Stack<Card> cards;
     private int reshuffleAtPercent;
     private Boolean needsReshuffleIndicator;
-
-    private Logger logger = Logger.getLogger(Shoe.class);
 
     public Shoe(int numDecks, int reshuffleAtPercent) throws Exception {
         this.numDecks = numDecks;
@@ -64,7 +61,6 @@ public class Shoe {
                 }
             }
         }
-        Random r = new Random(new Date().getTime());
-        Collections.shuffle(cards, r);
+        Collections.shuffle(cards, EvolutionManager.random);
     }
 }

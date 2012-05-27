@@ -25,6 +25,11 @@ import java.util.*;
 public class EvolutionManager {
 
     /**
+     * A Random that can be used by any of the various entities to save on instantiation costs
+     */
+    public static Random random = new Random(new Date().getTime());
+
+    /**
      * The Environment this EvolutionManager is in charge of evolving.
      */
     private Environment environment;
@@ -162,8 +167,6 @@ public class EvolutionManager {
      * @param <T> the type of Organisms in the Environment
      */
     public <T extends Organism> void doOneGeneration() {
-        Random r = new Random(new Date().getTime());
-
         // Reset the environment and fitness of the Organisms
         environment.reset();
         List<T> organisms = environment.getOrganisms();
@@ -201,8 +204,8 @@ public class EvolutionManager {
         List<T> allOffspring = new ArrayList<T>();
         while(newBirths-- > 0) {
             // Get two random organisms and breed them
-            T parent1 = organisms.get(r.nextInt(organisms.size()));
-            T parent2 = organisms.get(r.nextInt(organisms.size()));
+            T parent1 = organisms.get(random.nextInt(organisms.size()));
+            T parent2 = organisms.get(random.nextInt(organisms.size()));
             allOffspring.add((T)parent1.reproduceWith(parent2));
         }
 
@@ -211,7 +214,7 @@ public class EvolutionManager {
         int complexifies = (int)Math.ceil(organisms.size() / 1000.0f * complexifyChancePerThousand);
         while(complexifies-- > 0) {
             // Complexify the genome of a random organism
-            organisms.get(r.nextInt(organisms.size())).complexifyGenome();
+            organisms.get(random.nextInt(organisms.size())).complexifyGenome();
         }
 
         // Step 4: Simplify based on simplify rate
@@ -219,7 +222,7 @@ public class EvolutionManager {
         int simplifies = (int)Math.ceil(organisms.size() / 1000.0f * simplifyChancePerThousand);
         while(simplifies-- > 0) {
             // Complexify the genome of a random organism
-            organisms.get(r.nextInt(organisms.size())).simplifyGenome();
+            organisms.get(random.nextInt(organisms.size())).simplifyGenome();
         }
 
         // Step 5: Point mutate based on mutation rate
@@ -227,7 +230,7 @@ public class EvolutionManager {
         int mutations = (int)Math.ceil(organisms.size() / 1000.0f * mutationChancePerThousand);
         while(mutations-- > 0) {
             // Complexify the genome of a random organism
-            organisms.get(r.nextInt(organisms.size())).pointMutate();
+            organisms.get(random.nextInt(organisms.size())).pointMutate();
         }
 
         // Step 6: Add in the next generation

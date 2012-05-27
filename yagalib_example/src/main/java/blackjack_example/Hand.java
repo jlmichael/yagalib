@@ -1,7 +1,5 @@
 package blackjack_example;
 
-import blackjack_example.Card;
-
 import java.util.ArrayList;
 import java.util.List;
 

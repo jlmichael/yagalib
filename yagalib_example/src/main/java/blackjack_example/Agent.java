@@ -4,9 +4,7 @@ import org.apache.log4j.Logger;
 import yagalib.Organism;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class Agent implements Organism<Strategy> {
 
@@ -61,19 +59,6 @@ public class Agent implements Organism<Strategy> {
             return rule.getCommand();
         }
 
-//        Random r = new Random(new Date().getTime());
-//        switch(r.nextInt(5)) {
-//            case 0:
-//                return Rule.HIT;
-//            case 1:
-//                return Rule.STAND;
-//            case 2:
-//                return Rule.DOUBLE_OR_HIT;
-//            case 3:
-//                return Rule.DOUBLE_OR_STAND;
-//            case 4:
-//                return Rule.SURRENDER_OR_HIT;
-//        }
         return Rule.HIT;
     }
 

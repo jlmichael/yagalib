@@ -1,7 +1,5 @@
 package blackjack_example;
 
-import blackjack_example.Agent;
-import blackjack_example.Shoe;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

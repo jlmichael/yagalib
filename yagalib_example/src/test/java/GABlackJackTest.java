@@ -5,6 +5,7 @@ import org.junit.Test;
 import yagalib.EvolutionManager;
 import yagalib.Organism;
 import yagalib.util.FileStatWriter;
+import yagalib.util.NullWriter;
 
 import java.util.List;
 
@@ -39,10 +40,10 @@ public class GABlackJackTest extends TestCase {
         em.setSimplifyChancePerThousand(0);
         em.setEnvironment(new Casino());
         em.setupEnvironment();
-        FileStatWriter writer = new FileStatWriter("/tmp/genstats");
+        NullWriter writer = new NullWriter();
         writer.init();
         em.setWriter(writer);
-        em.evolve(100);
+        em.evolve(100000);
 
         List<Organism> organisms = em.getEnvironment().getOrganisms();
         Organism mostFit = organisms.get(0);
