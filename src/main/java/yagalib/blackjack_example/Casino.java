@@ -1,4 +1,4 @@
-package blackjack_example;
+package yagalib.blackjack_example;
 
 import org.apache.log4j.Logger;
 import yagalib.Environment;

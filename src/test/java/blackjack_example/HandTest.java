@@ -2,6 +2,8 @@ package blackjack_example;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import yagalib.blackjack_example.Card;
+import yagalib.blackjack_example.Hand;
 
 public class HandTest extends TestCase {
 

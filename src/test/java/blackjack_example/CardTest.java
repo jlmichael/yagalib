@@ -2,6 +2,7 @@ package blackjack_example;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import yagalib.blackjack_example.Card;
 
 import java.util.ArrayList;
 import java.util.List;

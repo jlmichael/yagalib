@@ -2,6 +2,10 @@ package blackjack_example;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import yagalib.blackjack_example.Agent;
+import yagalib.blackjack_example.Card;
+import yagalib.blackjack_example.Hand;
+import yagalib.blackjack_example.Rule;
 
 public class RuleTest extends TestCase {
 

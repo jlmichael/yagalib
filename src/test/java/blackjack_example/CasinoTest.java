@@ -2,7 +2,8 @@ package blackjack_example;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import yagalib.Organism;
+import yagalib.blackjack_example.Agent;
+import yagalib.blackjack_example.Casino;
 
 import java.util.List;
 
