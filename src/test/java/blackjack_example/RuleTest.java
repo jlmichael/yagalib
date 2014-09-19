@@ -50,24 +50,24 @@ public class RuleTest extends TestCase {
         Agent agent = new Agent();
         Hand hand = new Hand();
 
-        hand.addCard(new Card('A', 'H'));
-        hand.addCard(new Card('5', 'H'));
+        hand.addCard(new Card(Card.Pip.ACE, Card.Suit.HEARTS));
+        hand.addCard(new Card(Card.Pip.FIVE, Card.Suit.HEARTS));
         agent.addHand(hand);
 
         // Fail due to non matching dealer card
-        Card dealerCard = new Card('2', 'H');
+        Card dealerCard = new Card(Card.Pip.TWO, Card.Suit.HEARTS);
         assertFalse(rule.appliesToTableState(dealerCard, hand, agent));
 
         // Fail due to non matching hand value
-        dealerCard = new Card('A', 'H');
-        hand.addCard(new Card('2', 'H'));
+        dealerCard = new Card(Card.Pip.ACE, Card.Suit.HEARTS);
+        hand.addCard(new Card(Card.Pip.TWO, Card.Suit.HEARTS));
         assertFalse(rule.appliesToTableState(dealerCard, hand, agent));
 
         // Fail due to non matching soft status - looking for soft but hand is not
         agent.clearHands();
         hand.reset();
-        hand.addCard(new Card('9', 'H'));
-        hand.addCard(new Card('7', 'H'));
+        hand.addCard(new Card(Card.Pip.NINE, Card.Suit.HEARTS));
+        hand.addCard(new Card(Card.Pip.SEVEN, Card.Suit.HEARTS));
         agent.addHand(hand);
         assertFalse(rule.appliesToTableState(dealerCard, hand, agent));
 
@@ -75,16 +75,16 @@ public class RuleTest extends TestCase {
         rule.setHandIsSoft(false);
         agent.clearHands();
         hand.reset();
-        hand.addCard(new Card('A', 'H'));
-        hand.addCard(new Card('5', 'H'));
+        hand.addCard(new Card(Card.Pip.ACE, Card.Suit.HEARTS));
+        hand.addCard(new Card(Card.Pip.FIVE, Card.Suit.HEARTS));
         agent.addHand(hand);
         assertFalse(rule.appliesToTableState(dealerCard, hand, agent));
 
         // Fail due to not allowed to split
         agent.clearHands();
         hand.reset();
-        hand.addCard(new Card('9', 'H'));
-        hand.addCard(new Card('7', 'H'));
+        hand.addCard(new Card(Card.Pip.NINE, Card.Suit.HEARTS));
+        hand.addCard(new Card(Card.Pip.SEVEN, Card.Suit.HEARTS));
         agent.addHand(hand);
         rule.setHandIsSplittable(true);
         assertFalse(rule.appliesToTableState(dealerCard, hand, agent));
@@ -92,8 +92,8 @@ public class RuleTest extends TestCase {
         // Fail due to splittable
         agent.clearHands();
         hand.reset();
-        hand.addCard(new Card('8', 'H'));
-        hand.addCard(new Card('8', 'H'));
+        hand.addCard(new Card(Card.Pip.EIGHT, Card.Suit.HEARTS));
+        hand.addCard(new Card(Card.Pip.EIGHT, Card.Suit.HEARTS));
         agent.addHand(hand);
         rule.setHandIsSplittable(false);
         assertFalse(rule.appliesToTableState(dealerCard, hand, agent));

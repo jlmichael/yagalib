@@ -96,7 +96,7 @@ public class CasinoRules {
         }
 
         // resplit aces check
-        if(cards.get(0).getPip() == 'A' && agent.getHandCount() > 1 && !canResplitAces) {
+        if(cards.get(0).getPip() == Card.Pip.ACE && agent.getHandCount() > 1 && !canResplitAces) {
             return false;
         }
 

@@ -51,8 +51,8 @@ public class Shoe {
         cards.clear();
         needsReshuffleIndicator = false;
         for(int i = 0; i < numDecks; i++) {
-            for(Character pip : Card.ALLPIPS) {
-                for(Character suit : Card.ALLSUITS) {
+            for(Card.Pip pip : Card.Pip.values()) {
+                for(Card.Suit suit : Card.Suit.values()) {
                     try {
                         cards.push(new Card(pip, suit));
                     } catch (Exception e) {

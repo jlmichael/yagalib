@@ -25,7 +25,7 @@ public class Hand {
 
     public void addCard(Card card) {
         cards.add(card);
-        if(card.getPip() == 'A') {
+        if(card.getPip() == Card.Pip.ACE) {
             containsAce = true;
         }
     }
@@ -45,7 +45,7 @@ public class Hand {
         int value = 0;
         int aceCount = 0;
         for(Card card : cards) {
-            if(card.getPip() == 'A') {
+            if(card.getPip() == Card.Pip.ACE) {
                 aceCount++;
             } else {
                 value += card.getValue();
@@ -69,7 +69,7 @@ public class Hand {
         int value = 0;
         int aceCount = 0;
         for(Card card : cards) {
-            if(card.getPip() == 'A') {
+            if(card.getPip() == Card.Pip.ACE) {
                 aceCount++;
             } else {
                 value += card.getValue();

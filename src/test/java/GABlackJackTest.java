@@ -15,7 +15,7 @@ public class GABlackJackTest extends TestCase {
     @Test
     public void testEvolve() {
         // Remove the next line to actually run the test
-        if(true == true) return;
+//        if(true == true) return;
         EvolutionManager em = new EvolutionManager();
         em.setPopulation(100);
         em.setBirthRatePerThousand(500);

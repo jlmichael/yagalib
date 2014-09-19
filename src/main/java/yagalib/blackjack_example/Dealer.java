@@ -100,7 +100,7 @@ public class Dealer {
                     while(true) {
 
                         // If this hand is the result of split aces, and the casino forbids hitting split aces, just cont.
-                        if(hands.size() > 1 && hand.getCards().get(0).getPip() == 'A') {
+                        if(hands.size() > 1 && hand.getCards().get(0).getPip() == Card.Pip.ACE) {
                             logger.debug("This hand resulted from splitting Aces, so no prompting");
                             break;
                         }

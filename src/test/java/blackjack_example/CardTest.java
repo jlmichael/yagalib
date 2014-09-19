@@ -9,34 +9,10 @@ import java.util.List;
 
 public class CardTest extends TestCase {
     @Test
-    public void testConstructorBadPip() throws Exception {
-        Exception thrown = null;
-        try {
-            Card card = new Card('X', 'H');
-        } catch(Exception e) {
-            thrown = e;
-        }
-
-        assertNotNull(thrown);
-    }
-
-    @Test
-    public void testConstructorBadSuit() throws Exception {
-        Exception thrown = null;
-        try {
-            Card card = new Card('2', 'X');
-        } catch(Exception e) {
-            thrown = e;
-        }
-
-        assertNotNull(thrown);
-    }
-
-    @Test
     public void testGets() throws Exception {
-        Card card = new Card('2', 'H');
-        assertEquals('2', (char)card.getPip());
-        assertEquals('H', (char)card.getSuit());
+        Card card = new Card(Card.Pip.TWO, Card.Suit.HEARTS);
+        assertEquals(Card.Pip.TWO, card.getPip());
+        assertEquals(Card.Suit.HEARTS, card.getSuit());
         assertEquals(2, card.getValue());
     }
 
@@ -44,8 +20,8 @@ public class CardTest extends TestCase {
     public void testConstructAll() throws Exception {
         List<Card> cards = new ArrayList<Card>();
         Card card;
-        for(Character pip : Card.ALLPIPS) {
-            for(Character suit : Card.ALLSUITS) {
+        for(Card.Pip pip : Card.Pip.values()) {
+            for(Card.Suit suit : Card.Suit.values()) {
                 card = new Card(pip, suit);
                 cards.add(card);
             }

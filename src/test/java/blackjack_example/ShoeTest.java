@@ -41,8 +41,8 @@ public class ShoeTest extends TestCase {
         }
 
         assertEquals(52, seenCards.size());
-        for(Character pip : Card.ALLPIPS) {
-            for(Character suit : Card.ALLSUITS) {
+        for(Card.Pip pip : Card.Pip.values()) {
+            for(Card.Suit suit : Card.Suit.values()) {
                 Card card = new Card(pip, suit);
                 assertTrue(seenCards.containsKey(card.toString()));
                 assertEquals(1, (int)seenCards.get(card.toString()));
@@ -65,8 +65,8 @@ public class ShoeTest extends TestCase {
         }
 
         assertEquals(52, seenCards.size());
-        for(Character pip : Card.ALLPIPS) {
-            for(Character suit : Card.ALLSUITS) {
+        for(Card.Pip pip : Card.Pip.values()) {
+            for(Card.Suit suit : Card.Suit.values()) {
                 Card card = new Card(pip, suit);
                 assertTrue(seenCards.containsKey(card.toString()));
                 assertEquals(4, (int)seenCards.get(card.toString()));

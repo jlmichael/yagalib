@@ -7,61 +7,75 @@ import java.util.List;
 
 public class Card {
 
-    private Character pip;
-    private Character suit;
-    private int value;
+    public enum Suit {
+        HEARTS ('H'),
+        DIAMONDS ('D'),
+        SPADES ('S'),
+        CLUBS ('C');
 
-    public static final List<Character> ALLPIPS = Arrays.asList('2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A');
-    public static final List<Character> ALLSUITS = Arrays.asList('H', 'D', 'S', 'C');
+        private final Character asChar;
+
+        private Suit(Character asChar) {
+            this.asChar = asChar;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(asChar);
+        }
+    }
+
+    public enum Pip {
+        TWO (2),
+        THREE (3),
+        FOUR (4),
+        FIVE (5),
+        SIX (6),
+        SEVEN (7),
+        EIGHT (8),
+        NINE (9),
+        TEN (10),
+        JACK (10),
+        QUEEN (10),
+        KING (10),
+        ACE (1);
+
+        private final int handValue;
+
+        private Pip(int handValue) {
+            this.handValue = handValue;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(handValue);
+        }
+    }
+
+    private Pip pip;
+    private Suit suit;
 
     private static Logger logger = Logger.getLogger(Card.class);
 
-    public Card(Character pip, Character suit) throws Exception {
-        if(!ALLPIPS.contains(pip)) {
-            logger.error("Tried to create a new Card with bad pip: " + pip);
-            throw new Exception("Tried to create a new Card with bad pip: " + pip);
-        }
-        if(!ALLSUITS.contains(suit)) {
-            logger.error("Tried to create a new Card with bad suit: " + suit);
-            throw new Exception("Tried to create a new Card with bad suit: " + suit);
-        }
-
+    public Card(Pip pip, Suit suit) throws Exception {
         this.pip = pip;
         this.suit = suit;
-        switch(this.pip) {
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                this.value = Integer.valueOf(String.valueOf(this.pip));
-                break;
-            case 'A':
-                this.value = 1;
-                break;
-            default:
-                this.value = 10;
-                break;
-        }
     }
 
-    public Character getPip() {
+    public Pip getPip() {
         return pip;
     }
 
-    public Character getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 
     public int getValue() {
-        return value;
+        return pip.handValue;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(pip) + String.valueOf(suit);
+        return pip.toString() + suit.toString();
     }
 }
