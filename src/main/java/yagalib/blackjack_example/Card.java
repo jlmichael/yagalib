@@ -48,7 +48,19 @@ public class Card {
 
         @Override
         public String toString() {
-            return String.valueOf(handValue);
+            String result = String.valueOf(handValue);
+            if (this.equals(TEN)) {
+                result = "T";
+            } else if (this.equals(JACK)) {
+                result = "J";
+            } else if (this.equals(QUEEN)) {
+                result = "Q";
+            } else if (this.equals(KING)) {
+                result = "K";
+            } else if (this.equals(ACE)) {
+                result = "A";
+            }
+            return result;
         }
     }
 
