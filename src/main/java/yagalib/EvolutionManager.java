@@ -193,7 +193,7 @@ public class EvolutionManager {
 
         // Step 1: kill off the bottom of the list based on death rate
         int deaths = (int)Math.ceil(generationSize / 1000.0f * deathRatePerThousand);
-        organisms.subList(organisms.size() - deaths, organisms.size() - 1).clear();
+        organisms.subList(organisms.size() - deaths - 1, organisms.size() - 1).clear();
 
         // Step 2: breed at random based on the birth rate
         int newBirths = (int)Math.ceil(generationSize / 1000.0f * birthRatePerThousand);
