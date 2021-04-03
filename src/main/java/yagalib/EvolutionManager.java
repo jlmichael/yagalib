@@ -1,8 +1,6 @@
 package yagalib;
 
 import org.apache.log4j.Logger;
-import yagalib.Environment;
-import yagalib.Organism;
 import yagalib.util.StatWriter;
 
 import java.util.*;
@@ -22,7 +20,7 @@ import java.util.*;
  * @see Environment
  * @see Organism
  */
-public class EvolutionManager {
+public class EvolutionManager<T extends Organism> {
 
     /**
      * A Random that can be used by any of the various entities to save on instantiation costs
@@ -71,6 +69,36 @@ public class EvolutionManager {
      * The current generation count
      */
     private Integer generationCount = 0;
+
+    /**
+     * An ArrayList for storing the offspring of one generation.
+     */
+    private ArrayList<T> tmpOffspringArray = new ArrayList<T>();
+
+    /**
+     * The number of deaths per generation
+     */
+    private int deaths;
+
+    /**
+     * The number of births per generation
+     */
+    private int births;
+
+    /**
+     * The number of complexifies per generation
+     */
+    private int complexifies;
+
+    /**
+     * The number of mutations per generation
+     */
+    private int mutations;
+
+    /**
+     * The number of simplifies per generation
+     */
+    private int simplifies;
 
     /**
      * The StatWriter instance used to log generation fitness data
@@ -160,13 +188,17 @@ public class EvolutionManager {
     public void setupEnvironment() {
         environment.clearOrganisms();
         environment.populateWithOrganisms(population);
+        deaths = (int)Math.ceil(population / 1000.0f * deathRatePerThousand);
+        births = (int)Math.ceil(population / 1000.0f * birthRatePerThousand);
+        complexifies = (int)Math.ceil((population - deaths) / 1000.0f * complexifyChancePerThousand);
+        simplifies = (int)Math.ceil((population - deaths) / 1000.0f * simplifyChancePerThousand);
+        mutations = (int)Math.ceil((population - deaths) / 1000.0f * mutationChancePerThousand);
     }
 
     /**
      * Execute a single generation of evolution against the Environment.
-     * @param <T> the type of Organisms in the Environment
      */
-    public <T extends Organism> void doOneGeneration() {
+    public void doOneGeneration() {
         // Reset the environment and fitness of the Organisms
         environment.reset();
         List<T> organisms = environment.getOrganisms();
@@ -195,42 +227,39 @@ public class EvolutionManager {
         int deaths = (int)Math.ceil(generationSize / 1000.0f * deathRatePerThousand);
         organisms.subList(organisms.size() - deaths - 1, organisms.size() - 1).clear();
 
+        int i;
         // Step 2: breed at random based on the birth rate
-        int newBirths = (int)Math.ceil(generationSize / 1000.0f * birthRatePerThousand);
-        List<T> allOffspring = new ArrayList<T>();
-        while(newBirths-- > 0) {
+        for (i = 0; i < births; i++) {
             // Get two random organisms and breed them
             T parent1 = organisms.get(random.nextInt(organisms.size()));
             T parent2 = organisms.get(random.nextInt(organisms.size()));
-            allOffspring.add((T)parent1.reproduceWith(parent2));
+            tmpOffspringArray.add((T) parent1.reproduceWith(parent2));
         }
 
         // Step 3: Complexify based on complexify rate
         // Note that the numerator here is the size of the living list, not the generationsize
-        int complexifies = (int)Math.ceil(organisms.size() / 1000.0f * complexifyChancePerThousand);
-        while(complexifies-- > 0) {
+        for (i = 0; i < complexifies; i++) {
             // Complexify the genome of a random organism
             organisms.get(random.nextInt(organisms.size())).complexifyGenome();
         }
 
         // Step 4: Simplify based on simplify rate
         // Note that the numerator here is the size of the living list, not the generationsize
-        int simplifies = (int)Math.ceil(organisms.size() / 1000.0f * simplifyChancePerThousand);
-        while(simplifies-- > 0) {
+        for (i = 0; i < simplifies; i++) {
             // Complexify the genome of a random organism
             organisms.get(random.nextInt(organisms.size())).simplifyGenome();
         }
 
         // Step 5: Point mutate based on mutation rate
         // Note that the numerator here is the size of the living list, not the generationsize
-        int mutations = (int)Math.ceil(organisms.size() / 1000.0f * mutationChancePerThousand);
-        while(mutations-- > 0) {
-            // Complexify the genome of a random organism
+        for (i = 0; i < mutations; i++) {
+            // Mutate the genome of a random organism
             organisms.get(random.nextInt(organisms.size())).pointMutate();
         }
 
         // Step 6: Add in the next generation
-        organisms.addAll(allOffspring);
+        organisms.addAll(tmpOffspringArray);
+        tmpOffspringArray.clear();
 
     }
 
