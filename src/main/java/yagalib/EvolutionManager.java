@@ -224,7 +224,7 @@ public class EvolutionManager<T extends Organism> {
         writer.logGeneration(generationCount, maxFitness, minFitness, medianFitness);
 
         // Step 1: kill off the bottom of the list based on death rate
-        organisms.subList(organisms.size() - deaths, organisms.size()).clear();
+        organisms.subList(organisms.size() - deaths - 1, organisms.size()).clear();
 
         int i;
         // Step 2: breed at random based on the birth rate
