@@ -10,9 +10,8 @@ import java.util.List;
 public class CardTest extends TestCase {
     @Test
     public void testGets() throws Exception {
-        Card card = new Card(Card.Pip.TWO, Card.Suit.HEARTS);
+        Card card = new Card(Card.Pip.TWO);
         assertEquals(Card.Pip.TWO, card.getPip());
-        assertEquals(Card.Suit.HEARTS, card.getSuit());
         assertEquals(2, card.getValue());
     }
 
@@ -21,8 +20,8 @@ public class CardTest extends TestCase {
         List<Card> cards = new ArrayList<Card>();
         Card card;
         for(Card.Pip pip : Card.Pip.values()) {
-            for(Card.Suit suit : Card.Suit.values()) {
-                card = new Card(pip, suit);
+            for(int i = 0; i < 4; i++) {
+                card = new Card(pip);
                 cards.add(card);
             }
         }

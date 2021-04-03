@@ -24,10 +24,10 @@ public class AgentTest extends TestCase {
     @Test
     public void testPromptForCommand() throws Exception {
         Agent agent = new Agent();
-        Card dealerCard = new Card(Card.Pip.TWO, Card.Suit.HEARTS);
+        Card dealerCard = new Card(Card.Pip.TWO);
         Hand hand = new Hand();
-        hand.addCard(new Card(Card.Pip.TWO, Card.Suit.HEARTS));
-        hand.addCard(new Card(Card.Pip.TWO, Card.Suit.HEARTS));
+        hand.addCard(new Card(Card.Pip.TWO));
+        hand.addCard(new Card(Card.Pip.TWO));
 
         // Assert that empty strategy yields default of hit
         assertEquals(Rule.HIT, agent.promptForCommand(dealerCard, hand));

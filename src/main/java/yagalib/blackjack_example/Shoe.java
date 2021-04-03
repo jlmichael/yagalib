@@ -52,9 +52,9 @@ public class Shoe {
         needsReshuffleIndicator = false;
         for(int i = 0; i < numDecks; i++) {
             for(Card.Pip pip : Card.Pip.values()) {
-                for(Card.Suit suit : Card.Suit.values()) {
+                for(int j = 0; j < 4; j++) {
                     try {
-                        cards.push(new Card(pip, suit));
+                        cards.push(new Card(pip));
                     } catch (Exception e) {
                         throw new Exception("Error when trying to create Shoe: ", e);
                     }

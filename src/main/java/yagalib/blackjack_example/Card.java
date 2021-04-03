@@ -7,24 +7,6 @@ import java.util.List;
 
 public class Card {
 
-    public enum Suit {
-        HEARTS ('H'),
-        DIAMONDS ('D'),
-        SPADES ('S'),
-        CLUBS ('C');
-
-        private final Character asChar;
-
-        private Suit(Character asChar) {
-            this.asChar = asChar;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(asChar);
-        }
-    }
-
     public enum Pip {
         TWO (2),
         THREE (3),
@@ -65,21 +47,15 @@ public class Card {
     }
 
     private Pip pip;
-    private Suit suit;
 
     private static Logger logger = Logger.getLogger(Card.class);
 
-    public Card(Pip pip, Suit suit) throws Exception {
+    public Card(Pip pip) throws Exception {
         this.pip = pip;
-        this.suit = suit;
     }
 
     public Pip getPip() {
         return pip;
-    }
-
-    public Suit getSuit() {
-        return suit;
     }
 
     public int getValue() {
@@ -88,6 +64,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return pip.toString() + suit.toString();
+        return pip.toString();
     }
 }
