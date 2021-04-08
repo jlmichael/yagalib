@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import yagalib.util.StatWriter;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * EvolutionManager executes the process of evolution for the Environment it is given.  It manages the various rates,
@@ -54,16 +55,22 @@ public class EvolutionManager<T extends Organism> {
 
     /**
      * The death rate, expressed as the number of Organisms to cull per thousand Organisms.  Less fit Organisms will be
-     * culled before more fit Organisms.  It is important to keep this rate equal to the birth rate if you desire a
-     * fixed population size.
+     * culled before more fit Organisms.  It is important to keep this rate equal to the birth rate plus the champion
+     * clone rate if you desire a fixed population size.
      */
     private Integer deathRatePerThousand = 10;
 
     /**
      * The birth rate, expressed as the number of offspring Organisms created per thousand Organisms.  It is important
-     * to keep this rate equal to the death rate if you desire a fixed population size.
+     * to keep this rate equal to the death rate minus the champion clone rate if you desire a fixed population size.
      */
     private Integer birthRatePerThousand = 10;
+
+    /**
+     * The champion clone rate, expressed as the number of top-performing Organisms cloned per thousand.  It is
+     * important to keep this rate equal to the death rate minus the birth rate if you desire a fixed population size.
+     */
+    private Integer championCloneRatePerThousand = 0;
 
     /**
      * The current generation count
@@ -76,6 +83,11 @@ public class EvolutionManager<T extends Organism> {
     private ArrayList<T> tmpOffspringArray = new ArrayList<T>();
 
     /**
+     * An ArrayList for storing the clones from one generation.
+     */
+    private ArrayList<T> tmpCloneArray = new ArrayList<T>();
+
+    /**
      * The number of deaths per generation
      */
     private int deaths;
@@ -84,6 +96,11 @@ public class EvolutionManager<T extends Organism> {
      * The number of births per generation
      */
     private int births;
+
+    /**
+     * The number of clones per generation
+     */
+    private int clones;
 
     /**
      * The number of complexifies per generation
@@ -124,7 +141,7 @@ public class EvolutionManager<T extends Organism> {
     }
 
     /**
-     * Sets the rate at which mutations occur, as the number of point mutations per thousand Organisms.
+     * Sets the rate at which mutations occur.
      * @param mutationChancePerThousand the number of point mutations per thousand Organisms
      */
     public void setMutationChancePerThousand(Integer mutationChancePerThousand) {
@@ -132,7 +149,7 @@ public class EvolutionManager<T extends Organism> {
     }
 
     /**
-     * Sets the rate of spontaneous Genome complexifying as the number of complexify calls per thousand Organisms.
+     * Sets the rate of spontaneous Genome complexifying.
      * @param complexifyChancePerThousand the number of complexify operations to call per thousand Organisms
      */
     public void setComplexifyChancePerThousand(Integer complexifyChancePerThousand) {
@@ -140,7 +157,7 @@ public class EvolutionManager<T extends Organism> {
     }
 
     /**
-     * Set the rate of spontaneous Genome simplifying as the number of simplify calls per thousand Organisms.
+     * Set the rate of spontaneous Genome simplifying.
      * @param simplifyChancePerThousand the number of simplify operations to call per thousand Organisms
      */
     public void setSimplifyChancePerThousand(Integer simplifyChancePerThousand) {
@@ -148,9 +165,7 @@ public class EvolutionManager<T extends Organism> {
     }
 
     /**
-     * Set the death rate, expressed as the number of Organisms to cull per thousand Organisms.  Less fit Organisms
-     * will be culled before more fit Organisms.  It is important to keep this rate equal to the birth rate if you
-     * desire a fixed population size.
+     * Set the death rate, expressed as the number of Organisms to cull per thousand Organisms.
      * @param deathRatePerThousand the number of deaths per thousand Organisms
      */
     public void setDeathRatePerThousand(Integer deathRatePerThousand) {
@@ -158,12 +173,18 @@ public class EvolutionManager<T extends Organism> {
     }
 
     /**
-     * Set the birth rate, expressed as the number of offspring Organisms created per thousand Organisms.  It is
-     * important to keep this rate equal to the death rate if you desire a fixed population size.
+     * Set the birth rate, expressed as the number of offspring Organisms created per thousand Organisms.
      * @param birthRatePerThousand the number of births per thousand Organisms
      */
     public void setBirthRatePerThousand(Integer birthRatePerThousand) {
         this.birthRatePerThousand = birthRatePerThousand;
+    }
+
+    /**
+     * Set the champion clone rate, expressed as the number of top-performing Organisms cloned per thousand.
+     */
+    public void setChampionCloneRatePerThousand(Integer championCloneRatePerThousand) {
+        this.championCloneRatePerThousand = championCloneRatePerThousand;
     }
 
     /**
@@ -183,13 +204,14 @@ public class EvolutionManager<T extends Organism> {
     }
 
     /**
-     * Initialize the Environment by calling its clearOrganism() and populatWithOrganisms() methods.
+     * Initialize the Environment by calling its clearOrganism() and populateWithOrganisms() methods.
      */
     public void setupEnvironment() {
         environment.clearOrganisms();
         environment.populateWithOrganisms(population);
         deaths = (int)Math.ceil(population / 1000.0f * deathRatePerThousand);
         births = (int)Math.ceil(population / 1000.0f * birthRatePerThousand);
+        clones = (int)Math.ceil(population / 1000.0f * championCloneRatePerThousand);
         complexifies = (int)Math.ceil((population - deaths) / 1000.0f * complexifyChancePerThousand);
         simplifies = (int)Math.ceil((population - deaths) / 1000.0f * simplifyChancePerThousand);
         mutations = (int)Math.ceil((population - deaths) / 1000.0f * mutationChancePerThousand);
@@ -218,13 +240,15 @@ public class EvolutionManager<T extends Organism> {
         int minFitness = organisms.get(generationSize - 1).getFitness();
         int medianFitness = organisms.get((int)Math.ceil(generationSize / 2)).getFitness();
 
-        logger.info("Greatest fitness is " + maxFitness);
-        logger.info("Worst fitness is " + minFitness);
-        logger.info("Median fitness is " + medianFitness);
+        logger.info("Best/Median/Worst fitness:\t" + maxFitness + "\t" + medianFitness + "\t" + minFitness);
         writer.logGeneration(generationCount, maxFitness, minFitness, medianFitness);
 
+        // Step 0: clone the top of the list based on champion clone rate
+        for(T champion : organisms.subList(0, clones)) {
+            tmpCloneArray.add((T) champion.clone());
+        }
+
         // Step 1: kill off the bottom of the list based on death rate
-        int deaths = (int)Math.ceil(generationSize / 1000.0f * deathRatePerThousand);
         organisms.subList(organisms.size() - deaths - 1, organisms.size() - 1).clear();
 
         int i;
@@ -259,22 +283,37 @@ public class EvolutionManager<T extends Organism> {
 
         // Step 6: Add in the next generation
         organisms.addAll(tmpOffspringArray);
+        for(Organism organism : tmpCloneArray) {
+            organism.resetFitness();
+        }
+        organisms.addAll(tmpCloneArray);
         tmpOffspringArray.clear();
+        tmpCloneArray.clear();
 
     }
 
     /**
      * Evolve the Organisms in the Environment a set number of times.
      * @param numGenerations
+     * @param stopCondition A Function that will operate on the list of organisms each generation and return True
+     *                      if the stop condition has been met, halting the evolution process.
      */
-    public void evolve(int numGenerations) {
-        setupEnvironment();
+    public void evolve(int numGenerations, Function<List<Organism>, Boolean> stopCondition) {
+        if(stopCondition == null) {
+            stopCondition = new Function<List<Organism>, Boolean>() {
+                public Boolean apply(List<Organism> organisms) {
+                    return false;
+                }
+            };
+        }
+//        setupEnvironment();
         generationCount = 0;
-        while(generationCount < numGenerations) {
-            logger.info("Beginning generation " + generationCount);
+        while(generationCount < numGenerations && !stopCondition.apply(environment.getOrganisms())) {
+            logger.debug("Beginning generation " + generationCount);
             doOneGeneration();
-            logger.info("Generation " + generationCount + " finished.");
+            logger.debug("Generation " + generationCount + " finished.");
             generationCount++;
         }
+        logger.info("Evolution complete after " + generationCount + " generations.");
     }
 }

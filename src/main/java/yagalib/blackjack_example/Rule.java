@@ -3,9 +3,11 @@ package yagalib.blackjack_example;
 import yagalib.EvolutionManager;
 import yagalib.Gene;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
-public class Rule implements Gene {
+public class Rule implements Gene, Comparable<Rule> {
 
     private Integer dealerValue;
     private Integer handValue;
@@ -365,61 +367,135 @@ public class Rule implements Gene {
         return strategy;
     }
 
+    //  A library function to return a list of Rules representing random responses
+    //  every possible input.
+    public static List<Rule> generateFullRandomStrategy() {
+        List<Rule> strategy = new ArrayList<Rule>();
+        List<String> commands = Arrays.asList(STAND, SURRENDER_OR_HIT, HIT, SPLIT, DOUBLE_OR_HIT, DOUBLE_OR_STAND);
+        Random rand = EvolutionManager.random;
+        Rule rule;
+        String command;
+
+        // Hard hands
+        for(int i = 1; i <= 10; i++) {
+            for(int j = 5; j <= 21; j++) {
+                do {
+                    command = commands.get(rand.nextInt(commands.size()));
+                    rule = new Rule(i, j, false, false, command);
+                } while(!rule.isValid());
+                strategy.add(rule);
+            }
+        }
+
+        // Soft totals
+        for(int i = 1; i <= 10; i++) {
+            for(int j = 13; j <= 21; j++) {
+                do {
+                    command = commands.get(rand.nextInt(commands.size()));
+                    rule = new Rule(i, j, true, false, command);
+                } while(!rule.isValid());
+                strategy.add(rule);
+            }
+        }
+
+        // Splits
+        for(int i = 1; i <= 10; i++) {
+            for(int j = 2; j <= 20; j += 2) {
+                do {
+                    command = commands.get(rand.nextInt(commands.size()));
+                    rule = new Rule(i, j, false, true, command);
+                } while(!rule.isValid());
+                strategy.add(rule);
+            }
+        }
+
+        // Ten more for A,A, since in the above Pairs section, everything was hard
+        for(int i = 1; i <= 10; i++) {
+            do {
+                command = commands.get(rand.nextInt(commands.size()));
+                rule = new Rule(i, 12, true, true, command);
+            } while(!rule.isValid());
+            strategy.add(rule);
+        }
+
+        return strategy;
+    }
+
     // Genetic operations below
 
     public void mutate() {
         do {
-            // Determine which "base pair" to mutate
-            int mutationPoint = EvolutionManager.random.nextInt(5);
-            switch(mutationPoint) {
+            int commandIndex = EvolutionManager.random.nextInt(6);
+            String command = "";
+            switch(commandIndex) {
                 case 0:
-                    // Dealer's up card
-                    setDealerValue(EvolutionManager.random.nextInt(9) + 1);
+                    command = HIT;
                     break;
                 case 1:
-                    // Hand value
-                    setHandValue(EvolutionManager.random.nextInt(17) + 4);
+                    command = STAND;
                     break;
                 case 2:
-                    // softness
-                    setHandIsSoft(EvolutionManager.random.nextInt(2) == 1);
+                    command = DOUBLE_OR_HIT;
                     break;
                 case 3:
-                    // splittable
-                    setHandIsSplittable(EvolutionManager.random.nextInt(2) == 1);
+                    command = DOUBLE_OR_STAND;
                     break;
                 case 4:
-                    // command
-                    int commandIndex = EvolutionManager.random.nextInt(6);
-                    String command = "";
-                    switch(commandIndex) {
-                        case 0:
-                            command = HIT;
-                            break;
-                        case 1:
-                            command = STAND;
-                            break;
-                        case 2:
-                            command = DOUBLE_OR_HIT;
-                            break;
-                        case 3:
-                            command = DOUBLE_OR_STAND;
-                            break;
-                        case 4:
-                            command = SPLIT;
-                            break;
-                        case 5:
-                            command = SURRENDER_OR_HIT;
-                            break;
-                    }
-                    setCommand(command);
+                    command = SPLIT;
+                    break;
+                case 5:
+                    command = SURRENDER_OR_HIT;
                     break;
             }
+            setCommand(command);
         } while(!isValid());
     }
 
     public Gene generateRandomGene() {
         return generateRandomRule();
+    }
+
+    public Rule copy() {
+        return new Rule(dealerValue, handValue, handIsSoft, handIsSplittable, command);
+    }
+
+    public int compareTo(Rule o) {
+        int dvdiff = dealerValue.compareTo(o.getDealerValue());
+        if(dvdiff == 0) {
+            int hvdiff = handValue.compareTo(o.getHandValue());
+            if(hvdiff == 0) {
+                int softdiff = handIsSoft.compareTo(o.getHandIsSoft());
+                if(softdiff == 0) {
+                    int splitdiff = handIsSplittable.compareTo(o.getHandIsSplittable());
+                    if(splitdiff == 0) {
+                        return command.compareTo(o.getCommand());
+                    } else {
+                        return splitdiff;
+                    }
+                } else {
+                    return softdiff;
+                }
+            } else {
+                return hvdiff;
+            }
+        } else {
+            return dvdiff;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rule rule = (Rule) o;
+
+        if (!dealerValue.equals(rule.dealerValue)) return false;
+        if (!handValue.equals(rule.handValue)) return false;
+        if (!handIsSoft.equals(rule.handIsSoft)) return false;
+        if (!handIsSplittable.equals(rule.handIsSplittable)) return false;
+        return command.equals(rule.command);
+
     }
 }
 

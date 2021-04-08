@@ -80,4 +80,8 @@ public interface Organism<T extends Genome> {
      */
     public void simplifyGenome();
 
+    /**
+     * Create a clone of the Organism.
+     */
+    public Organism clone();
 }

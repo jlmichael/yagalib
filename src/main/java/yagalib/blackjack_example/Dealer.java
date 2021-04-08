@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class Dealer {
 
@@ -33,6 +34,8 @@ public class Dealer {
         this.agents = agents;
     }
 
+    public void clearAgents() { this.agents.clear(); }
+
     public Shoe getShoe() {
         return shoe;
     }
@@ -45,6 +48,15 @@ public class Dealer {
         while(numberOfHandsToDeal-- > 0) {
             deal();
         }
+    }
+
+    public Callable<Boolean> getCallable() {
+        return new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                dealSomeHands(5000);
+                return true;
+            }
+        };
     }
 
     public void deal() {
@@ -88,6 +100,7 @@ public class Dealer {
             // For each hand for each agent, keep prompting until they stand or bust
             i = 0;
             for(Agent agent : agents) {
+                agent.incRoundsPlayed();
                 i++;
                 int j = 1;
                 List<Hand> hands = agent.getHands();

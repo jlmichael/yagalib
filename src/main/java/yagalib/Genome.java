@@ -51,4 +51,9 @@ public interface Genome<T extends Gene> {
      */
     public void simplify();
 
+    /**
+     * Create a deep copy of this Genome.
+     */
+    Genome copy();
+
 }

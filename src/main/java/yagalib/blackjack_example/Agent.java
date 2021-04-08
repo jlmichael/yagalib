@@ -13,6 +13,8 @@ public class Agent implements Organism<Strategy> {
     // gets increased by 5 (except on dealer BJ, where it increased 4).  If they surrender, it gets increased by 1.
     // We start at 0, and negative values are allowed, obviously.
     private int score = 0;
+    private int roundsPlayed = 0;
+
     private Strategy strategy = new Strategy();
 
     // An agent may split his cards, hence we need to provide for a list of Hands rather than just one.
@@ -44,6 +46,8 @@ public class Agent implements Organism<Strategy> {
         this.score = score;
     }
 
+    public void incRoundsPlayed() { this.roundsPlayed++; }
+
     public Strategy getStrategy() {
         return strategy;
     }
@@ -64,12 +68,14 @@ public class Agent implements Organism<Strategy> {
 
     // Genetic operations follow
 
+    // We define fitness as the expected gain or loss per round played, in millidollars.
     public Integer getFitness() {
-        return score;
+        return (int) Math.ceil(score * 1000 / roundsPlayed);
     }
 
     public void resetFitness() {
         score = 0;
+        roundsPlayed = 0;
     }
 
     public Strategy getGenome() {
@@ -104,5 +110,11 @@ public class Agent implements Organism<Strategy> {
             return 0;
         }
         return 1;
+    }
+
+    public Agent clone() {
+        Agent clone = new Agent();
+        clone.setStrategy(strategy.copy());
+        return clone;
     }
 }

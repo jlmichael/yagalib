@@ -24,4 +24,9 @@ public interface Gene {
      * @return A randomized Gene.
      */
     public Gene generateRandomGene();
+
+    /**
+     * Create a deep copy of this Gene.
+     */
+    Gene copy();
 }

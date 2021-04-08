@@ -5,18 +5,38 @@ import yagalib.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Casino implements Environment<Agent> {
 
     private List<Agent> agents = new ArrayList<Agent>();
     private List<Dealer> dealers = new ArrayList<Dealer>();
+    private ExecutorService executor;
+    private List<Callable<Boolean>> dealerTasks = new ArrayList<Callable<Boolean>>();
 
     private Logger logger = Logger.getLogger(Casino.class);
 
     public void populateWithOrganisms(Integer organismCount) {
         // Generate empty Agents
         while(organismCount-- > 0) {
-            agents.add(new Agent());
+            Agent agent = new Agent();
+            agent.setStrategy(new Strategy(Rule.generateFullRandomStrategy()));
+            agents.add(agent);
+        }
+
+        int dealerCount = (int)Math.ceil(agents.size() / 5.0f);
+        executor = Executors.newFixedThreadPool(4);
+        while(dealerCount-- > 0) {
+            try {
+                Dealer dealer = new Dealer(new ArrayList<Agent>(), new Shoe(8, 20));
+                dealers.add(dealer);
+                dealerTasks.add(dealer.getCallable());
+            } catch (Exception e) {
+                logger.error("Caught exception while trying to create dealers: ", e);
+                return;
+            }
         }
     }
 
@@ -26,33 +46,25 @@ public class Casino implements Environment<Agent> {
 
     public void clearOrganisms() {
         agents.clear();
-    }
-
-    public void reset() {
         dealers.clear();
     }
 
-    public void doWorkOnOrganisms() {
-        // Create enough Dealers to accomodate our Agents
-        int dealerCount = (int)Math.ceil(agents.size() / 5.0f);
-        while(dealerCount-- > 0) {
-            try {
-                dealers.add(new Dealer(new ArrayList<Agent>(), new Shoe(8, 20)));
-            } catch (Exception e) {
-                logger.error("Caught exception while trying to create dealers: ", e);
-                return;
-            }
-        }
+    public void reset() {}
 
+    public void doWorkOnOrganisms() {
+        for(Dealer dealer : dealers) {
+            dealer.clearAgents();
+        }
         // Place the agents with their dealers
         for(int i = 0; i < agents.size(); i++) {
             Dealer myDealer = dealers.get((int)(i / 5));
             myDealer.getAgents().add(agents.get(i));
         }
 
-        // Tell each dealer to deal 1000 hands of BJ
-        for(Dealer dealer : dealers) {
-            dealer.dealSomeHands(1000);
+        try {
+            executor.invokeAll(dealerTasks);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

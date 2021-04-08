@@ -54,11 +54,7 @@ public class Strategy implements Genome<Rule> {
         List<Rule> ruleList = new ArrayList<Rule>();
         ruleList.addAll(rules.values());
         Rule mutant = ruleList.get(EvolutionManager.random.nextInt(ruleList.size()));
-        String mutantKey = mutant.makeKey();
-        rules.remove(mutantKey);
         mutant.mutate();
-        mutantKey = mutant.makeKey();
-        rules.put(mutantKey, mutant);
     }
 
     public Genome crossoverWith(Genome otherGenome) {
@@ -66,8 +62,9 @@ public class Strategy implements Genome<Rule> {
         Strategy offspringGenome = new Strategy();
         List<Rule> newRules = new ArrayList<Rule>();
         List<Rule> ourRules = new ArrayList<Rule>(rules.values());
+        Collections.sort(ourRules);
         if(ourRules.size() > 0) {
-            for(int i = 0; i < Math.ceil(ourRules.size()); i += 2) {
+            for(int i = 0; i < ourRules.size(); i += 2) {
                 Rule newRule = new Rule();
                 Rule parentRule = ourRules.get(i);
                 newRule.setDealerValue(parentRule.getDealerValue());
@@ -79,8 +76,9 @@ public class Strategy implements Genome<Rule> {
             }
         }
         List<Rule> otherGenes = otherGenome.getGenes();
-        if(otherGenes.size() > 0) {
-            for(int i = 0; i < Math.ceil(otherGenes.size()); i += 2) {
+        Collections.sort(otherGenes);
+        if(otherGenes.size() > 1) {
+            for(int i = 1; i < otherGenes.size(); i += 2) {
                 Rule newRule = new Rule();
                 Rule parentRule = otherGenes.get(i);
                 newRule.setDealerValue(parentRule.getDealerValue());
@@ -122,5 +120,27 @@ public class Strategy implements Genome<Rule> {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    public Strategy copy() {
+        Strategy copy = new Strategy();
+        List<Rule> rules = new ArrayList<Rule>();
+        for(Rule rule : this.getRules()) {
+            rules.add(rule.copy());
+        }
+        copy.setRules(rules);
+        return copy;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) { return true; }
+        if(!(obj instanceof Strategy)) { return false; }
+        Strategy o = (Strategy) obj;
+        List<Rule> left = getRules();
+        List<Rule> right = o.getRules();
+        Collections.sort(left);
+        Collections.sort(right);
+        return left.equals(right);
     }
 }
